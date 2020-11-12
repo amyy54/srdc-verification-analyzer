@@ -1,0 +1,28 @@
+<h1>{{ game_fullname }}</h1>
+<h3>Current runs in queue: {{ in_queue }}</h3>
+<h3>Average runs per day: {{ average_daily }}</h3>
+<br>
+<h2>Verification Statistics:</h2>
+<h3>Runs Analyzed: {{ verifier_analyzed }}</h3>
+<div>
+    <p style="float: left"><img src="{{ url_for('static', filename=image_source) }}"></p>
+    {% for x in general_info %}
+    <p>{{ x["name"] }}: {{ x["runs"] }}</p>
+    {% endfor %}
+</div>
+{% if display_other %}
+<h3 style="clear: left">Information for 'Others'</h3>
+<div style="clear: left">
+    <p style="float: left"><img src="{{ url_for('static', filename=other_source) }}"></p>
+    {% for x in other_info %}
+    <p>{{ x["name"] }}: {{ x["runs"] }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+<div style="clear: left">
+    <h3>In-Depth Statistics</h3>
+    <h4>Average Length of Runs Verified</h4>
+    {% for x in general_info %}
+    <p>{{ x["name"] }}: {{ x["length"] }}</p>
+    {% endfor %}
+</div>
