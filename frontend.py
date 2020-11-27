@@ -1,4 +1,5 @@
 import analyzer
+import queue
 from flask import Flask, request, render_template
 import os
 
@@ -50,6 +51,15 @@ def data():
                                display_other=parse_other,
                                other_source="other_pie.png",
                                other_info=other_data)
+
+
+@app.route("/queue/", methods=["POST", "GET"])
+def queue_page():
+    if request.method == 'GET':
+        return "Only POST requests are accepted"
+    if request.method == 'POST':
+        form_data = dict(request.form)
+        return queue.load_queue([form_data["abbreviation"]])
 
 
 app.run(host="localhost", port=5000)

@@ -5,7 +5,6 @@ import urllib.error
 import datetime
 import matplotlib
 import matplotlib.pyplot as plt
-import os
 
 ENDPOINT = "https://www.speedrun.com/api/v1/"
 GAME = ENDPOINT + "games?abbreviation={}&embed=moderators"

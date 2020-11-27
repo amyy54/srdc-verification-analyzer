@@ -1,14 +1,26 @@
+<h1>SRDC Verification Analyzer</h1>
+
+<h2>Verification Statistics</h2>
+
 <h3>Note:</h3>
 <p>A dumb part of this program is how it uses static images for the graphs. If you want those to work properly, please use the tool in an incognito window or clear the cache every time you generate new data.</p>
 <br>
 
 <form action="/data" method="post">
-    <p>Abbreviation <input type="text" name="abbreviation" /></p>
+    <p>Abbreviation <input type="text" name="abbreviation" placeholder="smo" /></p>
     <br>
     <p style="font-weight: bold">If calendar preview doesn't work<br>please use ISO8601 format</p>
     <p>Starting Date <input type="date" name="start_date" placeholder="2020-10-01" /></p>
     <p>Ending Date <input type="date" name="end_date" placeholder="2020-11-01" /></p>
     <br>
     <p>Parse 'Other' Information <input type="checkbox" name="other_parse" /> - Renders more detailed information about Verifiers not on the current moderation team</p>
+    <p><input type="submit" value="Submit"/></p>
+</form>
+
+<br>
+
+<h2>Verification Queue</h2>
+<form action="/queue" method="post">
+    <p>Abbreviation <input type="text" name="abbreviation" placeholder="smo" /></p>
     <p><input type="submit" value="Submit"/></p>
 </form>
