@@ -56,7 +56,11 @@ def data():
 @app.route("/queue/", methods=["POST", "GET"])
 def queue_page():
     if request.method == 'GET':
-        return "Only POST requests are accepted"
+        query = request.args.get("abbreviation")
+        if query is None:
+            return "Only POST requests or query strings are accepted"
+        
+        return queue.load_queue(query.split(","))
     if request.method == 'POST':
         form_data = dict(request.form)
         return queue.load_queue(form_data["abbreviation"].split(", "))
