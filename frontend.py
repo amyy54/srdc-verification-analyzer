@@ -59,7 +59,7 @@ def queue_page():
         return "Only POST requests are accepted"
     if request.method == 'POST':
         form_data = dict(request.form)
-        return queue.load_queue([form_data["abbreviation"]])
+        return queue.load_queue(form_data["abbreviation"].split(", "))
 
 
 app.run(host="localhost", port=5000)
