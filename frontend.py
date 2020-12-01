@@ -57,10 +57,13 @@ def data():
 def queue_page():
     if request.method == 'GET':
         query = request.args.get("abbreviation")
+        category = request.args.get("category")
+        if category is not None:
+            category = category.split(",")
         if query is None:
             return "Only POST requests or query strings are accepted"
         
-        return queue.load_queue(query.split(","))
+        return queue.load_queue(query.split(","), category=category)
     if request.method == 'POST':
         form_data = dict(request.form)
         return queue.load_queue(form_data["abbreviation"].split(", "))
