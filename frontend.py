@@ -58,15 +58,19 @@ def queue_page():
     if request.method == 'GET':
         query = request.args.get("abbreviation")
         category = request.args.get("category")
+        user_query = request.args.get("user")
         if category is not None:
             category = category.split(",")
+        if user_query is not None:
+            user_query = user_query.split(",")
         if query is None:
             return "Only POST requests or query strings are accepted"
         
-        return queue.load_queue(query.split(","), category=category)
+        return queue.load_queue(query.split(","), category=category, user_query=user_query)
     if request.method == 'POST':
         form_data = dict(request.form)
         return queue.load_queue(form_data["abbreviation"].split(", "))
 
 
-app.run(host="localhost", port=5000)
+if __name__ == '__main__':
+    app.run(host="localhost", port=5000)

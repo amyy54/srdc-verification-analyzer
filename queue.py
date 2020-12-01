@@ -5,7 +5,7 @@ import json
 import datetime
 
 
-def load_queue(GAMES, category=None):
+def load_queue(GAMES, category=None, user_query=None):
     final_result = ""
 
     for x in GAMES:
@@ -52,7 +52,6 @@ def load_queue(GAMES, category=None):
 
                 search_title = title.replace(" ", "_").replace("%", "")
                 if category is None or search_title in category:
-                    run_count += 1
                     for j in i["category"]["data"]["variables"]["data"]:
                         if j["is-subcategory"] and j["id"] in i["values"]:
                             var_array.append(j["id"])
@@ -70,24 +69,26 @@ def load_queue(GAMES, category=None):
                             user = "User failed to load"
                             pass
 
-                    # Get Time
-                    time = i["times"]["primary_t"]
-                    time_result = str(datetime.timedelta(seconds=int(time)))
+                    if user_query is None or user in user_query:
+                        run_count += 1
+                        # Get Time
+                        time = i["times"]["primary_t"]
+                        time_result = str(datetime.timedelta(seconds=int(time)))
 
-                    # Platform
-                    platform = i["platform"]["data"]["name"]
+                        # Platform
+                        platform = i["platform"]["data"]["name"]
 
-                    # Date ago
-                    # date = datetime.date.fromisoformat(i["date"])
-                    # dateago = timeago.format(date, datetime.datetime.now())
-                    dateago = i["date"]
+                        # Date ago
+                        # date = datetime.date.fromisoformat(i["date"])
+                        # dateago = timeago.format(date, datetime.datetime.now())
+                        dateago = i["date"]
 
-                    time_weblink = "<a href=" + i["weblink"] + ">" + time_result + "</a>"
-                    title_weblink = "<a href=" + title_weblink + ">" + title + "</a>"
-                    user_weblink = "<a href=" + i["players"]["data"][0]["weblink"] + ">" + user + "</a>"
+                        time_weblink = "<a href=" + i["weblink"] + ">" + time_result + "</a>"
+                        title_weblink = "<a href=" + title_weblink + ">" + title + "</a>"
+                        user_weblink = "<a href=" + i["players"]["data"][0]["weblink"] + ">" + user + "</a>"
 
-                    webpage_result += (title_weblink + " | " + user_weblink + " | " + time_weblink + " | " + platform + " | " + dateago) + "<br>"
-                    webpage_result += "----------------------------------<br>"
+                        webpage_result += (title_weblink + " | " + user_weblink + " | " + time_weblink + " | " + platform + " | " + dateago) + "<br>"
+                        webpage_result += "----------------------------------<br>"
 
             found = False
 
