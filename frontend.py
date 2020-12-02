@@ -33,6 +33,10 @@ def data():
             parse_other = False
 
         analyzer_data = analyzer.manager(form_data["abbreviation"], date=date, ending_date=end_date)
+
+        if analyzer_data is None:
+            return "Error: runs_analyzed returned 0. Are you sure that runs were verified in that time frame?"
+
         analyzer.pie_chart(analyzer_data["verifier_stats"])
 
         if parse_other and len(analyzer_data["other_list"]) > 0:

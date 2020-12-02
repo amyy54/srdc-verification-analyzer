@@ -215,6 +215,10 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
             run_average_date = datetime.timedelta(seconds=int(run_average))
         else:
             run_average_date = None
+
+        if runs_analyzed_count == 0:
+            return None
+
         percent = (x["count"] / runs_analyzed_count) * 100
         output += str(x["name"]) + ": {}% | {}\n".format(round(percent, 1), x["count"])
         output_dict["verifier_stats"].append({
