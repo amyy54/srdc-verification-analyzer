@@ -3,6 +3,7 @@ import urllib.request
 import urllib.error
 import json
 import datetime
+import timeago
 
 
 def load_queue(GAMES, category=None, user_query=None):
@@ -79,16 +80,15 @@ def load_queue(GAMES, category=None, user_query=None):
                         platform = i["platform"]["data"]["name"]
 
                         # Date ago
-                        # date = datetime.date.fromisoformat(i["date"])
-                        # dateago = timeago.format(date, datetime.datetime.now())
-                        dateago = i["date"]
+                        date = datetime.date.fromisoformat(i["date"])
+                        dateago = timeago.format(date, datetime.datetime.now())
 
                         time_weblink = "<a href=" + i["weblink"] + ">" + time_result + "</a>"
                         title_weblink = "<a href=" + title_weblink + ">" + title + "</a>"
                         user_weblink = "<a href=" + i["players"]["data"][0]["weblink"] + ">" + user + "</a>"
 
                         webpage_result += (title_weblink + " | " + user_weblink + " | " + time_weblink + " | " + platform + " | " + dateago) + "<br>"
-                        webpage_result += "----------------------------------<br>"
+                        webpage_result += "<br>"
 
             found = False
 

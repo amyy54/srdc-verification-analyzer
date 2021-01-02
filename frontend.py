@@ -1,7 +1,8 @@
 import analyzer
 import queue
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, abort, Response
 import os
+from json import dumps
 
 app = Flask(__name__, static_folder=os.getcwd())
 
@@ -14,7 +15,7 @@ def main():
 @app.route("/data/", methods=['POST', 'GET'])
 def data():
     if request.method == 'GET':
-        return "Only POST requests are accepted"
+        return abort(405)
     if request.method == 'POST':
         form_data = dict(request.form)
         if len(form_data["start_date"]) > 0:
@@ -35,26 +36,33 @@ def data():
         analyzer_data = analyzer.manager(form_data["abbreviation"], date=date, ending_date=end_date)
 
         if analyzer_data is None:
-            return "Error: runs_analyzed returned 0. Are you sure that runs were verified in that time frame?"
+            return abort(400)
 
-        analyzer.pie_chart(analyzer_data["verifier_stats"])
+        google_chart = analyzer.google_chart(analyzer_data["verifier_stats"])
+
+        google_colors = analyzer.google_colors(analyzer_data["verifier_stats"])
 
         if parse_other and len(analyzer_data["other_list"]) > 0:
             other_data = analyzer.parse_other(analyzer_data["other_list"])
-            analyzer.pie_chart(other_data, filename="other_pie.png")
+
+            other_chart = analyzer.google_chart(other_data)
+            other_colors = analyzer.google_colors(other_data)
+
         else:
             parse_other = False
-            other_data = []
+            other_chart = []
+            other_colors = {}
         return render_template("./data.html",
                                game_fullname=analyzer_data["game_name"],
                                in_queue=str(analyzer_data["in_queue"]),
                                average_daily=str(analyzer_data["average_daily"]),
                                verifier_analyzed=str(analyzer_data["verifier_analyzed"]),
                                general_info=analyzer_data["verifier_stats"],
-                               image_source="verifier_pie.png",
                                display_other=parse_other,
-                               other_source="other_pie.png",
-                               other_info=other_data)
+                               chart_data=dumps(google_chart),
+                               chart_colors=google_colors,
+                               other_google_chart=dumps(other_chart),
+                               other_google_colors=other_colors)
 
 
 @app.route("/queue/", methods=["POST", "GET"])
@@ -68,7 +76,7 @@ def queue_page():
         if user_query is not None:
             user_query = user_query.split(",")
         if query is None:
-            return "Only POST requests or query strings are accepted"
+            return abort(405)
         
         return queue.load_queue(query.split(","), category=category, user_query=user_query)
     if request.method == 'POST':

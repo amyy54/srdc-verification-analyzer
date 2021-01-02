@@ -3,14 +3,28 @@ import urllib
 import urllib.request
 import urllib.error
 import datetime
-import matplotlib
-import matplotlib.pyplot as plt
 
 ENDPOINT = "https://www.speedrun.com/api/v1/"
 GAME = ENDPOINT + "games?abbreviation={}&embed=moderators"
 RUNS = ENDPOINT + "runs?game={}&direction=desc&orderby=date&max=200"
 VERIFIED = ENDPOINT + "runs?game={}&status=verified&direction=desc&orderby=verify-date&max=200"
 USERS = ENDPOINT + "users/{}"
+
+
+def google_colors(analyzer_data):
+    result = {}
+    for pos, x in enumerate(analyzer_data, start=0):
+        result[pos] = {'color': x["color"]}
+
+    return result
+
+
+def google_chart(analyzer_data):
+    result = [["Examiner", "Verified"]]
+    for x in analyzer_data:
+        result.append([x["name"], x["runs"]])
+
+    return result
 
 
 def parse_other(other_list):
@@ -42,25 +56,6 @@ def parse_other(other_list):
         })
 
     return verifier_stats
-
-
-def pie_chart(analyzer_data, filename="verifier_pie.png"):
-    matplotlib.use("Agg")
-    labels = []
-    sizes = []
-    colors = []
-    for x in analyzer_data:
-        if x["runs"] == 0:
-            continue
-        labels.append(x["name"])
-        sizes.append(x["runs"])
-        colors.append(x["color"])
-
-    plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%')
-    plt.axis("equal")
-    # plt.show()
-    plt.savefig(filename)
-    plt.close()
 
 
 def manager(abbreviation, date=None, ending_date=None, includeLength=False):
@@ -249,4 +244,3 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
 
 if __name__ == "__main__":
     print(manager("smoce", date="2020-11-01", includeLength=True))
-    # testing()
