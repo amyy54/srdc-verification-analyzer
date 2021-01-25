@@ -9,6 +9,8 @@ import timeago
 def load_queue(GAMES, category=None, user_query=None):
     final_result = ""
 
+    json_result = []
+
     for x in GAMES:
         webpage_result = ""
         # Fetch Game ID
@@ -30,6 +32,12 @@ def load_queue(GAMES, category=None, user_query=None):
             game_name = str(x)
 
         queue_url = "https://www.speedrun.com/api/v1/runs?game=" + str(id) + "&status=new&direction=asc&orderby=date&embed=platform,players,category.variables,level&max=200"
+
+        json_result.append({
+            "game_name": game_name,
+            "runs": [],
+            "run_count": 0
+        })
 
         while True:
             # Fetch queue information
@@ -84,11 +92,22 @@ def load_queue(GAMES, category=None, user_query=None):
                         dateago = timeago.format(date, datetime.datetime.now())
 
                         time_weblink = "<a href=" + i["weblink"] + ">" + time_result + "</a>"
-                        title_weblink = "<a href=" + title_weblink + ">" + title + "</a>"
+                        # title_weblink = "<a href=" + title_weblink + ">" + title + "</a>"
                         user_weblink = "<a href=" + i["players"]["data"][0]["weblink"] + ">" + user + "</a>"
 
                         webpage_result += (title_weblink + " | " + user_weblink + " | " + time_weblink + " | " + platform + " | " + dateago) + "<br>"
                         webpage_result += "<br>"
+
+                        json_result[len(json_result) - 1]["runs"].append({
+                            "title": title,
+                            "title_weblink": title_weblink,
+                            "user": user,
+                            "user_weblink": i["players"]["data"][0]["weblink"],
+                            "time": time_result,
+                            "weblink": i["weblink"],
+                            "platform": platform,
+                            "date": dateago
+                        })
 
             found = False
 
@@ -102,6 +121,7 @@ def load_queue(GAMES, category=None, user_query=None):
                 break
 
         webpage_result = "<h2>" + game_name + " - [" + str(run_count) + "]</h2><br>" + webpage_result
+        json_result[len(json_result) - 1]["run_count"] = run_count
         final_result += webpage_result
 
-    return final_result
+    return json_result

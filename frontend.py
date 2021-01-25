@@ -77,11 +77,12 @@ def queue_page():
             user_query = user_query.split(",")
         if query is None:
             return abort(405)
-        
-        return queue.load_queue(query.split(","), category=category, user_query=user_query)
+        return render_template("./queue.html",
+                               queue_data=queue.load_queue(query.split(","), category=category, user_query=user_query))
     if request.method == 'POST':
         form_data = dict(request.form)
-        return queue.load_queue(form_data["abbreviation"].split(", "))
+        return render_template("./queue.html",
+                               queue_data=queue.load_queue(form_data["abbreviation"].split(", ")))
 
 
 if __name__ == '__main__':
