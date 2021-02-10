@@ -71,14 +71,19 @@ def queue_page():
         query = request.args.get("abbreviation")
         category = request.args.get("category")
         user_query = request.args.get("user")
+        order_by = request.args.get("orderby")
         if category is not None:
             category = category.split(",")
         if user_query is not None:
             user_query = user_query.split(",")
+        if order_by is None:
+            order_by = "date"
+
         if query is None:
             return abort(405)
         return render_template("./queue.html",
-                               queue_data=queue.load_queue(query.split(","), category=category, user_query=user_query))
+                               queue_data=queue.load_queue(query.split(","), category=category, user_query=user_query,
+                                                           queue_order=order_by))
     if request.method == 'POST':
         form_data = dict(request.form)
         return render_template("./queue.html",

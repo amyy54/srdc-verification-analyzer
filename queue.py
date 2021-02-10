@@ -6,7 +6,7 @@ import datetime
 import timeago
 
 
-def load_queue(GAMES, category=None, user_query=None):
+def load_queue(GAMES, category=None, user_query=None, queue_order="date"):
     final_result = ""
 
     json_result = []
@@ -31,7 +31,7 @@ def load_queue(GAMES, category=None, user_query=None):
         except urllib.error.URLError:
             game_name = str(x)
 
-        queue_url = "https://www.speedrun.com/api/v1/runs?game=" + str(id) + "&status=new&direction=asc&orderby=date&embed=platform,players,category.variables,level&max=200"
+        queue_url = "https://www.speedrun.com/api/v1/runs?game=" + str(id) + "&status=new&direction=asc&orderby=" + queue_order + "&embed=platform,players,category.variables,level&max=200"
 
         json_result.append({
             "game_name": game_name,
