@@ -1,10 +1,25 @@
 import analyzer
 import queue
-from flask import Flask, request, render_template, abort, Response
+from flask import Flask, request, render_template, abort, redirect
 import os
 from json import dumps
 
 app = Flask(__name__, static_folder=os.getcwd())
+
+
+@app.errorhandler(404)
+def error_404(e):
+    return open("./errors/error.html").read()
+
+
+@app.errorhandler(500)
+def error_500(e):
+    return open("./errors/server_error.html").read()
+
+
+@app.errorhandler(400)
+def error_400(e):
+    return open("./errors/400_error.html").read()
 
 
 @app.route("/")
@@ -15,7 +30,7 @@ def main():
 @app.route("/data/", methods=['POST', 'GET'])
 def data():
     if request.method == 'GET':
-        return abort(405)
+        return redirect("/")
     if request.method == 'POST':
         form_data = dict(request.form)
         if len(form_data["start_date"]) > 0:
@@ -69,6 +84,9 @@ def data():
 def queue_page():
     if request.method == 'GET':
         query = request.args.get("abbreviation")
+        if query is None:
+            return redirect("/")
+
         category = request.args.get("category")
         user_query = request.args.get("user")
         order_by = request.args.get("orderby")
@@ -79,15 +97,37 @@ def queue_page():
         if order_by is None:
             order_by = "date"
 
-        if query is None:
-            return abort(405)
         return render_template("./queue.html",
-                               queue_data=queue.load_queue(query.split(","), category=category, user_query=user_query,
-                                                           queue_order=order_by))
+                               queue_data=queue.load_queue(query.split(","), category=category,
+                                                           user_query=user_query, queue_order=order_by))
     if request.method == 'POST':
         form_data = dict(request.form)
         return render_template("./queue.html",
                                queue_data=queue.load_queue(form_data["abbreviation"].split(", ")))
+
+
+@app.route("/queue/<games>")
+def queue_page_with_directory(games=None):
+    if games is None:
+        return abort(405)
+    category = request.args.get("category")
+    user_query = request.args.get("user")
+    order_by = request.args.get("orderby")
+    if category is not None:
+        category = category.split(",")
+    if user_query is not None:
+        user_query = user_query.split(",")
+    if order_by is None:
+        order_by = "date"
+
+    return render_template("./queue.html",
+                           queue_data=queue.load_queue(games.split(","), category=category,
+                                                       user_query=user_query, queue_order=order_by))
+
+
+@app.route("/kpop/")
+def memes():
+    return open("./errors/joke.html").read()
 
 
 if __name__ == '__main__':

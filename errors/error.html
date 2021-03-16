@@ -1,0 +1,24 @@
+<head>
+    <style>
+        .code {
+            background-color: #eee;
+            border: 1px solid #999;
+            display: inline-block;
+            padding: 2px;
+        }
+    </style>
+</head>
+
+<h1>An Error has Occurred</h1>
+
+<p>Based on the Error Message obtained by the Server, it appears to be your fault.</p>
+
+<h2>Double Check your Queue Syntax!</h2>
+<p>For reference, the new desired endpoint is <span class="code">/queue/sm64,sm64memes</span>, the other endpoint is considered deprecated.</p>
+<p>Everything else (such as category and user filters along with orderby) is still done with arguments.</p>
+<p>Example: <span class="code">/queue/sm64,sm64memes?category=70_Star&orderby=submitted</span>.</p>
+
+<h2>Make sure the Endpoint actually exists!</h2>
+<p>The only valid endpoints for this server are <span class="code">/data/</span> and <span class="code">/queue/</span>.</p>
+<p><span class="code">/data/</span> is handled by the index page and will only accept POST requests done in a very specific manner.</p>
+<p>This may change in the future but for now this is how it is.</p>
