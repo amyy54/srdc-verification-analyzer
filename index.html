@@ -2,22 +2,71 @@
 
 <h2>Verification Statistics</h2>
 
-<form action="/data" method="post">
-    <p>Abbreviation <input type="text" name="abbreviation" placeholder="smo" /></p>
+<form onsubmit="return dataFormParse();">
+    <p>Abbreviation <input type="text" name="abbreviation" id="abbreviation" placeholder="smo" /></p>
     <br>
     <p style="font-weight: bold">If calendar preview doesn't work<br>please use ISO8601 format</p>
-    <p>Starting Date <input type="date" name="start_date" placeholder="2020-10-01" /></p>
-    <p>Ending Date <input type="date" name="end_date" placeholder="2020-11-01" /></p>
+    <p>Starting Date <input type="date" name="start_date" id="start_date" placeholder="2020-10-01" /></p>
+    <p>Ending Date <input type="date" name="end_date" id="end_date" placeholder="2020-11-01" /></p>
     <br>
-    <p>Parse 'Other' Information <input type="checkbox" name="other_parse" /> - Renders more detailed information about Verifiers not on the current moderation team</p>
+    <p>Parse 'Other' Information <input type="checkbox" name="other_parse" id="other_parse" /> - Renders more detailed information about Verifiers not on the current moderation team</p>
     <p><input type="submit" value="Submit"/></p>
 </form>
 
 <br>
 
 <h2>Verification Queue</h2>
-<form action="/queue" method="post">
+<form onsubmit="return queueFormParse();">
     <p style="font-weight: bold">If you want to get more than one queue<br>separate the abbreviations by commas</p>
-    <p>Abbreviation <input type="text" name="abbreviation" placeholder="smo[, smoce]" /></p>
+    <p>Abbreviation <input type="text" name="abbreviation" id="queue_id" placeholder="smo[,smoce]" /></p>
     <p><input type="submit" value="Submit"/></p>
 </form>
+
+<script>
+    function dataFormParse()
+    {
+        var redirect = window.location.href + "data/"
+
+        var game = document.getElementById("abbreviation").value;
+        redirect += game;
+        var start_date = document.getElementById("start_date").value;
+        var end_date = document.getElementById("end_date").value;
+        var parse_other = document.getElementById("other_parse").checked;
+
+        if (start_date)
+        {
+            redirect += "?startdate=" + start_date;
+            if (end_date)
+            {
+                redirect += "&enddate=" + end_date;
+                if (parse_other)
+                {
+                    redirect += "&parseother=yes";
+                }
+                location = redirect;
+            }
+            if (parse_other)
+            {
+                redirect += "&parseother=yes";
+            }
+            location = redirect;
+        }
+        else if (parse_other)
+        {
+            redirect += "?parseother=yes";
+        }
+        location = redirect;
+        return false;
+    }
+</script>
+<script>
+    function queueFormParse()
+    {
+        var redirect = window.location.href + "queue/"
+
+        var game = document.getElementById("queue_id").value;
+        redirect += game;
+        location = redirect;
+        return false;
+    }
+</script>

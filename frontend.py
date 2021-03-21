@@ -27,57 +27,45 @@ def main():
     return open("index.html").read()
 
 
-@app.route("/data/", methods=['POST', 'GET'])
-def data():
-    if request.method == 'GET':
-        return redirect("/")
-    if request.method == 'POST':
-        form_data = dict(request.form)
-        if len(form_data["start_date"]) > 0:
-            date = form_data["start_date"]
-        else:
-            date = None
+@app.route("/data/<game>")
+def data(game=None):
+    if game is None:
+        abort(405)
 
-        if len(form_data["end_date"]) > 0:
-            end_date = form_data["end_date"]
-        else:
-            end_date = None
+    start_date = request.args.get("startdate")
+    end_date = request.args.get("enddate")
+    parse_other = request.args.get("parseother")
 
-        try:
-            parse_other = form_data["other_parse"] == "on"
-        except KeyError:
-            parse_other = False
+    analyzer_data = analyzer.manager(game, date=start_date, ending_date=end_date)
 
-        analyzer_data = analyzer.manager(form_data["abbreviation"], date=date, ending_date=end_date)
+    if analyzer_data is None:
+        return abort(400)
 
-        if analyzer_data is None:
-            return abort(400)
+    google_chart = analyzer.google_chart(analyzer_data["verifier_stats"])
 
-        google_chart = analyzer.google_chart(analyzer_data["verifier_stats"])
+    google_colors = analyzer.google_colors(analyzer_data["verifier_stats"])
 
-        google_colors = analyzer.google_colors(analyzer_data["verifier_stats"])
+    if parse_other and len(analyzer_data["other_list"]) > 0:
+        other_data = analyzer.parse_other(analyzer_data["other_list"])
 
-        if parse_other and len(analyzer_data["other_list"]) > 0:
-            other_data = analyzer.parse_other(analyzer_data["other_list"])
+        other_chart = analyzer.google_chart(other_data)
+        other_colors = analyzer.google_colors(other_data)
 
-            other_chart = analyzer.google_chart(other_data)
-            other_colors = analyzer.google_colors(other_data)
-
-        else:
-            parse_other = False
-            other_chart = []
-            other_colors = {}
-        return render_template("./data.html",
-                               game_fullname=analyzer_data["game_name"],
-                               in_queue=str(analyzer_data["in_queue"]),
-                               average_daily=str(analyzer_data["average_daily"]),
-                               verifier_analyzed=str(analyzer_data["verifier_analyzed"]),
-                               general_info=analyzer_data["verifier_stats"],
-                               display_other=parse_other,
-                               chart_data=dumps(google_chart),
-                               chart_colors=google_colors,
-                               other_google_chart=dumps(other_chart),
-                               other_google_colors=other_colors)
+    else:
+        parse_other = False
+        other_chart = []
+        other_colors = {}
+    return render_template("./data.html",
+                           game_fullname=analyzer_data["game_name"],
+                           in_queue=str(analyzer_data["in_queue"]),
+                           average_daily=str(analyzer_data["average_daily"]),
+                           verifier_analyzed=str(analyzer_data["verifier_analyzed"]),
+                           general_info=analyzer_data["verifier_stats"],
+                           display_other=parse_other,
+                           chart_data=dumps(google_chart),
+                           chart_colors=google_colors,
+                           other_google_chart=dumps(other_chart),
+                           other_google_colors=other_colors)
 
 
 @app.route("/queue/", methods=["POST", "GET"])
@@ -123,11 +111,6 @@ def queue_page_with_directory(games=None):
     return render_template("./queue.html",
                            queue_data=queue.load_queue(games.split(","), category=category,
                                                        user_query=user_query, queue_order=order_by))
-
-
-@app.route("/kpop/")
-def memes():
-    return open("./errors/joke.html").read()
 
 
 if __name__ == '__main__':
