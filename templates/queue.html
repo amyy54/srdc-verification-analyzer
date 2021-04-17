@@ -1,6 +1,30 @@
 <html>
 <head>
     <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                color-scheme: dark;
+            }
+
+            a {
+                color: #809fff;
+            }
+
+            .row:hover {
+                background-color: #444;
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .row:hover {
+                background-color: #bbb;
+            }
+
+            a {
+                color: #4044ff;
+            }
+        }
+
         * {
             box-sizing: border-box;
         }
@@ -10,10 +34,6 @@
             position: relative;
             margin-left: 15%;
             margin-right: 15%;
-        }
-
-        .row:hover {
-            background-color: #bbb;
         }
 
         .column {

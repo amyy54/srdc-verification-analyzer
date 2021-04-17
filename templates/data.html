@@ -1,5 +1,25 @@
 <html>
 <head>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                color-scheme: dark;
+            }
+
+            div.google-visualization-tooltip {
+                text-color: #000;
+            }
+
+            #piechart text {
+                fill: #fff;
+            }
+
+            #otherchart text {
+                fill: #fff;
+            }
+        }
+    </style>
+
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
       google.charts.load('current', {'packages':['corechart']});
@@ -12,7 +32,9 @@
         var options = {
           title: '{{ game_fullname }}',
           pieSliceText: 'label',
-          slices: {{chart_colors|safe}}
+          slices: {{chart_colors|safe}},
+          backgroundColor: { fill: 'transparent' },
+          tooltip: { isHtml: true }
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -25,7 +47,9 @@
         var other_options = {
           title: '{{ game_fullname }} - Other',
           pieSliceText: 'label',
-          slices: {{other_google_colors|safe}}
+          slices: {{other_google_colors|safe}},
+          backgroundColor: { fill: 'transparent' },
+          tooltip: { isHtml: true }
         };
 
         var other_chart = new google.visualization.PieChart(document.getElementById('otherchart'));
