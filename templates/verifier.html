@@ -1,0 +1,70 @@
+<html>
+<head>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                color-scheme: dark;
+            }
+
+            a {
+                color: #809fff;
+            }
+
+            .row:hover {
+                background-color: #444;
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .row:hover {
+                background-color: #bbb;
+            }
+
+            a {
+                color: #4044ff;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .row {
+            display: flex;
+            position: relative;
+            margin-left: 15%;
+            margin-right: 15%;
+        }
+
+        .column {
+            flex: 50%;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<h2 style="padding-left: 50px;">{{examiner}}</h2>
+{% for y in verifier_data %}
+<div class="row">
+    <div class="column">
+        <p><a href="{{y["title_weblink"]}}">{{y["title"]}}</a></p>
+    </div>
+    <div class="column">
+        <p><a href="{{y["user_weblink"]}}">{{y["user"]}}</a></p>
+    </div>
+    <div class="column">
+        <p><a href="{{y["weblink"]}}">{{y["time"]}}</a></p>
+    </div>
+    <div class="column">
+        <p>{{y["platform"]}}</p>
+    </div>
+    <div class="column">
+        <p>{{y["date"]}}</p>
+    </div>
+    <div class="column">
+        <p>{{y["status"]}} {{y["verify-date"]}}</p>
+    </div>
+</div>
+{% endfor %}
+</body>
+</html>

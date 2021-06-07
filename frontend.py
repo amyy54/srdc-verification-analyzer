@@ -1,5 +1,6 @@
 import analyzer
 import queue
+import verifier_analyzer
 from flask import Flask, request, render_template, abort, redirect
 import os
 from json import dumps
@@ -111,6 +112,17 @@ def queue_page_with_directory(games=None):
     return render_template("./queue.html",
                            queue_data=queue.load_queue(games.split(","), category=category,
                                                        user_query=user_query, queue_order=order_by))
+
+
+@app.route("/verifier/<examiner>")
+def verifier_page(examiner=None):
+    if examiner is None:
+        return abort(405)
+    game = request.args.get("game")
+
+    return render_template("./verifier.html",
+                           verifier_data=verifier_analyzer.analyzer(examiner, game=game),
+                           examiner=examiner)
 
 
 if __name__ == '__main__':
