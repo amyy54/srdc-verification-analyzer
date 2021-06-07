@@ -43,8 +43,8 @@
     </style>
 </head>
 <body>
-<h2 style="padding-left: 50px;">{{examiner}}</h2>
-{% for y in verifier_data %}
+<h2 style="padding-left: 50px;">{{verifier_data["examiner"]}}</h2>
+{% for y in verifier_data["runs"] %}
 <div class="row">
     <div class="column">
         <p><a href="{{y["title_weblink"]}}">{{y["title"]}}</a></p>

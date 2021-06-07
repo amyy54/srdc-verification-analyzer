@@ -121,8 +121,7 @@ def verifier_page(examiner=None):
     game = request.args.get("game")
 
     return render_template("./verifier.html",
-                           verifier_data=verifier_analyzer.analyzer(examiner, game=game),
-                           examiner=examiner)
+                           verifier_data=verifier_analyzer.analyzer(examiner, game=game))
 
 
 if __name__ == '__main__':

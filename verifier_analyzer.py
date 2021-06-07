@@ -11,10 +11,14 @@ VERIFIERS = ENDPOINT + "runs?examiner={}&direction=desc&orderby=verify-date&" \
 
 
 def analyzer(examiner, game=None):
-    json_result = []
-
     examiner_download = json.loads(urllib.request.urlopen(ENDPOINT + "users?lookup=" + examiner).read())
     examiner = examiner_download["data"][0]["id"]
+    examiner_name = examiner_download["data"][0]["names"]["international"]
+
+    json_result = {
+        "examiner": examiner_name,
+        "runs": []
+    }
 
     url = VERIFIERS.format(examiner)
     if game is not None:
@@ -25,6 +29,7 @@ def analyzer(examiner, game=None):
     verified = json.loads(urllib.request.urlopen(url).read())
 
     for i in verified["data"]:
+        # print(i["weblink"])
         is_level = False
         title = ""
         var_array = []
@@ -76,13 +81,15 @@ def analyzer(examiner, game=None):
         if i["status"]["status"] == "verified":
             status = "Verified"
             verify_date = i["status"]["verify-date"]
-            verify_date = verify_date.split("T", 1)[0]
-            verify_date = datetime.date.fromisoformat(verify_date)
-            verifyago = timeago.format(verify_date, datetime.datetime.now())
+            if verify_date is not None:
+                # Support for really old runs
+                verify_date = verify_date.split("T", 1)[0]
+                verify_date = datetime.date.fromisoformat(verify_date)
+                verifyago = timeago.format(verify_date, datetime.datetime.now())
         else:
             status = "Rejected"
 
-        json_result.append({
+        json_result["runs"].append({
             "title": title,
             "title_weblink": title_weblink,
             "user": user,
