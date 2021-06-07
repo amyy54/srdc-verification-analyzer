@@ -18,11 +18,9 @@ def analyzer(examiner, game=None):
 
     url = VERIFIERS.format(examiner)
     if game is not None:
-        game = game.split(",")
-        for x in game:
-            game_download = json.loads(urllib.request.urlopen(ENDPOINT + "games?abbreviation=" + x).read())
-            x = game_download["data"][0]["id"]
-            url += "&game=" + x
+        game_download = json.loads(urllib.request.urlopen(ENDPOINT + "games?abbreviation=" + game).read())
+        x = game_download["data"][0]["id"]
+        url += "&game=" + x
 
     verified = json.loads(urllib.request.urlopen(url).read())
 
@@ -63,7 +61,11 @@ def analyzer(examiner, game=None):
         time_result = str(datetime.timedelta(seconds=int(time)))
 
         # Platform
-        platform = i["platform"]["data"]["name"]
+        try:
+            platform = i["platform"]["data"]["name"]
+        except TypeError:
+            # Multiple Mario Games
+            platform = ""
 
         # Date ago
         date = datetime.date.fromisoformat(i["date"])
