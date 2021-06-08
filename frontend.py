@@ -1,6 +1,7 @@
 import analyzer
 import queue
 import verifier_analyzer
+import record_finder
 from flask import Flask, request, render_template, abort, redirect
 import os
 from json import dumps
@@ -112,6 +113,25 @@ def queue_page_with_directory(games=None):
     return render_template("./queue.html",
                            queue_data=queue.load_queue(games.split(","), category=category,
                                                        user_query=user_query, queue_order=order_by))
+
+
+@app.route("/queue/<games>/records")
+def records_page(games=None):
+    if games is None:
+        return abort(405)
+    category = request.args.get("category")
+    user_query = request.args.get("user")
+    order_by = request.args.get("orderby")
+    if category is not None:
+        category = category.split(",")
+    if user_query is not None:
+        user_query = user_query.split(",")
+    if order_by is None:
+        order_by = "date"
+
+    return render_template("./queue.html",
+                           queue_data=record_finder.find_records(games.split(","), category=category,
+                                                                 user_query=user_query, queue_order=order_by))
 
 
 @app.route("/verifier/<examiner>")
