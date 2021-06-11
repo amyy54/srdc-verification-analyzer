@@ -4,6 +4,7 @@ import urllib.request
 import urllib.error
 import datetime
 import queue
+from flask import abort
 
 ENDPOINT = "https://www.speedrun.com/api/v1/"
 GAME = ENDPOINT + "games?abbreviation={}&embed=moderators"
@@ -77,10 +78,15 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
         output_dict["game_name"] = games["data"][0]["names"]["international"]
         output_dict["game_id"] = abbreviation
     except LookupError:
-        return LookupError
+        abort(404)
+        return
 
     # Get recent runs
-    runs = json.loads(urllib.request.urlopen(RUNS.format(games["data"][0]["id"])).read())
+    try:
+        runs = json.loads(urllib.request.urlopen(RUNS.format(games["data"][0]["id"])).read())
+    except urllib.error.URLError:
+        abort(503)
+        return
 
     # Runs in queue
     output_dict["in_queue"] = len(queue.load_queue(abbreviation.split(","))[0]["runs"])
@@ -142,7 +148,8 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
         try:
             verified = json.loads(urllib.request.urlopen(verified_endpoint).read())
         except urllib.error.URLError:
-            break
+            abort(503)
+            return
 
         for x in verified["data"]:
             date_of_run = datetime.datetime.strptime((x["status"]["verify-date"])[0:10], "%Y-%m-%d")

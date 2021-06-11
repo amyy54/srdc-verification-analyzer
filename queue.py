@@ -4,9 +4,10 @@ import urllib.error
 import json
 import datetime
 import timeago
+from flask import abort
 
 
-def load_queue(GAMES, category=None, user_query=None, queue_order="date"):
+def load_queue(GAMES, category=None, user_query=None, queue_order="date", exclusions=None):
     final_result = ""
 
     json_result = []
@@ -17,10 +18,14 @@ def load_queue(GAMES, category=None, user_query=None, queue_order="date"):
         try:
             game = json.loads(urllib.request.urlopen("https://www.speedrun.com/api/v1/games?abbreviation=" + str(x)).read())
         except urllib.error.URLError:
-            webpage_result += str(x) + " failed to connect. Please try again later"
-            continue
+            abort(503)
+            return
 
-        id = game["data"][0]["id"]
+        try:
+            id = game["data"][0]["id"]
+        except:
+            abort(404)
+            return
         run_count = 0
 
         # Fetch game information (used for title)
@@ -29,7 +34,8 @@ def load_queue(GAMES, category=None, user_query=None, queue_order="date"):
                 urllib.request.urlopen("https://www.speedrun.com/api/v1/games/" + str(id)).read())
             game_name = game_info["data"]["names"]["international"]
         except urllib.error.URLError:
-            game_name = str(x)
+            abort(503)
+            return
 
         queue_url = "https://www.speedrun.com/api/v1/runs?game=" + str(id) + "&status=new&direction=asc&orderby=" + queue_order + "&embed=platform,players,category.variables,level&max=200"
 
@@ -44,8 +50,8 @@ def load_queue(GAMES, category=None, user_query=None, queue_order="date"):
             try:
                 queue = json.loads(urllib.request.urlopen(queue_url).read())
             except urllib.error.URLError:
-                webpage_result += str(x) + " failed to connect. Please try again later"
-                break
+                abort(503)
+                return
 
             for i in queue["data"]:
                 is_level = False
@@ -60,7 +66,8 @@ def load_queue(GAMES, category=None, user_query=None, queue_order="date"):
                 title += i["category"]["data"]["name"]
 
                 search_title = title.replace(" ", "_").replace("%", "")
-                if category is None or search_title in category:
+                if (category is None or search_title in category) and \
+                        (exclusions is None or search_title not in exclusions):
                     for j in i["category"]["data"]["variables"]["data"]:
                         if j["is-subcategory"] and j["id"] in i["values"]:
                             var_array.append(j["id"])

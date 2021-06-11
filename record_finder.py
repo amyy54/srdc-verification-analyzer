@@ -4,26 +4,32 @@ import urllib.error
 import json
 import datetime
 import timeago
+from flask import abort
 
 
 def check_times(record, time):
     return record["time"] > time
 
 
-def find_records(GAMES, category=None, user_query=None, queue_order="date"):
+def find_records(GAMES, category=None, user_query=None, queue_order="date", exclusions=None):
     json_result = []
 
     records = []
 
     for x in GAMES:
-        webpage_result = ""
         # Fetch Game ID
         try:
             game = json.loads(urllib.request.urlopen("https://www.speedrun.com/api/v1/games?abbreviation=" + str(x)).read())
         except urllib.error.URLError:
-            continue
+            abort(503)
+            return
 
-        id = game["data"][0]["id"]
+        try:
+            id = game["data"][0]["id"]
+        except:
+            abort(404)
+            return
+
         run_count = 0
 
         # Fetch game information (used for title)
@@ -47,8 +53,8 @@ def find_records(GAMES, category=None, user_query=None, queue_order="date"):
             try:
                 queue = json.loads(urllib.request.urlopen(queue_url).read())
             except urllib.error.URLError:
-                webpage_result += str(x) + " failed to connect. Please try again later"
-                break
+                abort(503)
+                return
 
             for i in queue["data"]:
                 is_level = False
@@ -63,7 +69,8 @@ def find_records(GAMES, category=None, user_query=None, queue_order="date"):
                 title += i["category"]["data"]["name"]
 
                 search_title = title.replace(" ", "_").replace("%", "")
-                if category is None or search_title in category:
+                if (category is None or search_title in category) and \
+                        (exclusions is None or search_title not in exclusions):
                     for j in i["category"]["data"]["variables"]["data"]:
                         if j["is-subcategory"] and j["id"] in i["values"]:
                             var_array.append(j["id"])
@@ -103,7 +110,11 @@ def find_records(GAMES, category=None, user_query=None, queue_order="date"):
                             if len(var_array) > 0:
                                 leaderboard_url += f"&var-{var_array[0]}={var_array[1]}"
 
-                            leaderboard = json.loads(urllib.request.urlopen(leaderboard_url).read())
+                            try:
+                                leaderboard = json.loads(urllib.request.urlopen(leaderboard_url).read())
+                            except urllib.error.URLError:
+                                abort(503)
+                                return
 
                             if len(leaderboard["data"]["runs"]) > 0:
                                 records.append(
