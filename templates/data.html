@@ -18,6 +18,14 @@
                 fill: #fff;
             }
         }
+        a {
+            color: white;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #8761ab;
+        }
     </style>
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -61,7 +69,7 @@
 </head>
 <body>
     <h1>{{ game_fullname }}</h1>
-    <h3>Current runs in queue: {{ in_queue }}</h3>
+    <h3>Current runs in queue: <a href="/queue/{{ game_id }}">{{ in_queue }}</a></h3>
     <h3>Average runs per day: {{ average_daily }}</h3>
     <br>
     <h2>Verification Statistics:</h2>
@@ -79,7 +87,9 @@
         <h3>In-Depth Statistics</h3>
         <h4>Average Length of Runs Verified</h4>
         {% for x in general_info %}
-        <p>{{ x["name"] }}: {{ x["length"] }}</p>
+        {% if x["name"] != "Other" %}
+        <p><a href="/verifier/{{ x["name"] }}?game={{ game_id }}">{{ x["name"] }}</a>: {{ x["length"] }}</p>
+        {% endif %}
         {% endfor %}
     </div>
 </body>

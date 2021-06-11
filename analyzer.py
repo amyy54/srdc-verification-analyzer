@@ -3,6 +3,7 @@ import urllib
 import urllib.request
 import urllib.error
 import datetime
+import queue
 
 ENDPOINT = "https://www.speedrun.com/api/v1/"
 GAME = ENDPOINT + "games?abbreviation={}&embed=moderators"
@@ -59,9 +60,9 @@ def parse_other(other_list):
 
 
 def manager(abbreviation, date=None, ending_date=None, includeLength=False):
-    output = ""
     output_dict = {
         "game_name": "Testing",
+        "game_id": "1234",
         "in_queue": 0,
         "average_daily": 0,
         "verifier_analyzed": 0,
@@ -70,32 +71,19 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
     }
 
     # Find game
+    games = json.loads(urllib.request.urlopen(GAME.format(abbreviation)).read())
+
     try:
-        games = json.loads(urllib.request.urlopen(GAME.format(abbreviation)).read())
-    except urllib.error.URLError:
-        output += "Game request failed, aborting"
-        return output
-    try:
-        output += games["data"][0]["names"]["international"] + "\n"
         output_dict["game_name"] = games["data"][0]["names"]["international"]
+        output_dict["game_id"] = abbreviation
     except LookupError:
-        output += "Game not found, aborting"
-        return output
+        return LookupError
 
     # Get recent runs
-    try:
-        runs = json.loads(urllib.request.urlopen(RUNS.format(games["data"][0]["id"])).read())
-    except urllib.error.URLError:
-        output = "Run request failed, aborting"
-        return output
+    runs = json.loads(urllib.request.urlopen(RUNS.format(games["data"][0]["id"])).read())
 
     # Runs in queue
-    queue = 0
-    for x in runs["data"]:
-        if x["status"]["status"] == "new":
-            queue += 1
-    output += "\nRuns in queue: {}\n".format(queue)
-    output_dict["in_queue"] = queue
+    output_dict["in_queue"] = len(queue.load_queue(abbreviation.split(","))[0]["runs"])
 
     # Average runs per day
     dates = []
@@ -118,7 +106,6 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
         total += x
     average = total / len(dates)
 
-    output += "Average runs per day: {}\n".format(round(average, 2))
     output_dict["average_daily"] = round(average, 2)
 
     # Verifier Information
@@ -155,7 +142,6 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
         try:
             verified = json.loads(urllib.request.urlopen(verified_endpoint).read())
         except urllib.error.URLError:
-            output = "Verified request failed, aborting"
             break
 
         for x in verified["data"]:
@@ -168,6 +154,7 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
                 break
 
             not_other = False
+            runs_analyzed_count += 1
             for i in moderators:
                 if x["status"]["examiner"] == i["id"]:
                     i["count"] += 1
@@ -177,18 +164,11 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
                 other_count += 1
                 other_list.append(x["status"]["examiner"])
 
-        if date_reached:
-            runs_analyzed_count = 0
-            for x in moderators:
-                runs_analyzed_count += x["count"]
-            break
-        elif starting_date is None:
-            runs_analyzed_count += 200
+        if date_reached or starting_date is None:
             break
 
         else:
             found_endpoint = False
-            runs_analyzed_count += 200
             for x in verified["pagination"]["links"]:
                 if x["rel"] == "next":
                     verified_endpoint = x["uri"]
@@ -197,8 +177,6 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
             if not found_endpoint:
                 break
 
-    output += "\nVerifier Information:\n"
-    output += "Runs Analyzed: {}\n\n".format(runs_analyzed_count)
     output_dict["verifier_analyzed"] = runs_analyzed_count
 
     for x in moderators:
@@ -214,16 +192,12 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
         if runs_analyzed_count == 0:
             return None
 
-        percent = (x["count"] / runs_analyzed_count) * 100
-        output += str(x["name"]) + ": {}% | {}\n".format(round(percent, 1), x["count"])
         output_dict["verifier_stats"].append({
             "name": x["name"],
             "runs": x["count"],
             "length": str(run_average_date),
             "color": x["mod_color"]
         })
-        if includeLength:
-            output += "\tAverage Length: {}\n".format(run_average_date)
 
     output_dict["verifier_stats"].append({
         "name": "Other",
@@ -233,13 +207,7 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
     })
     output_dict["other_list"] = other_list
 
-    percent = (other_count / runs_analyzed_count) * 100
-    output += "Other: {}%".format(round(percent, 1))
-
-    if __name__ != "__main__":
-        return output_dict
-    else:
-        return output
+    return output_dict
 
 
 if __name__ == "__main__":

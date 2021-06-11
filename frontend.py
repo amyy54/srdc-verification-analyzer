@@ -59,6 +59,7 @@ def data(game=None):
         other_colors = {}
     return render_template("./data.html",
                            game_fullname=analyzer_data["game_name"],
+                           game_id=analyzer_data["game_id"],
                            in_queue=str(analyzer_data["in_queue"]),
                            average_daily=str(analyzer_data["average_daily"]),
                            verifier_analyzed=str(analyzer_data["verifier_analyzed"]),
