@@ -72,6 +72,7 @@ def data(game=None):
                            game_id=analyzer_data["game_id"],
                            in_queue=str(analyzer_data["in_queue"]),
                            average_daily=str(analyzer_data["average_daily"]),
+                           average_verified=str(analyzer_data["verified_daily"]),
                            verifier_analyzed=str(analyzer_data["verifier_analyzed"]),
                            general_info=analyzer_data["verifier_stats"],
                            display_other=parse_other,

@@ -4,6 +4,7 @@ import urllib.request
 import urllib.error
 import datetime
 import queue
+import average
 from flask import abort
 
 ENDPOINT = "https://www.speedrun.com/api/v1/"
@@ -66,10 +67,13 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
         "game_id": "1234",
         "in_queue": 0,
         "average_daily": 0,
+        "verified_daily": 0,
         "verifier_analyzed": 0,
         "verifier_stats": [],
         "other_list": []
     }
+
+    average_verified = []
 
     # Find game
     games = json.loads(urllib.request.urlopen(GAME.format(abbreviation)).read())
@@ -81,38 +85,8 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
         abort(404)
         return
 
-    # Get recent runs
-    try:
-        runs = json.loads(urllib.request.urlopen(RUNS.format(games["data"][0]["id"])).read())
-    except urllib.error.URLError:
-        abort(503)
-        return
-
     # Runs in queue
     output_dict["in_queue"] = len(queue.load_queue(abbreviation.split(","))[0]["runs"])
-
-    # Average runs per day
-    dates = []
-    counter = 0
-    recent_date = ""
-    for x in runs["data"]:
-        if len(recent_date) == 0:
-            recent_date = x["date"]
-            counter += 1
-            continue
-
-        if x["date"] != recent_date:
-            recent_date = x["date"]
-            dates.append(counter)
-            counter = 0
-        else:
-            counter += 1
-    total = 0
-    for x in dates:
-        total += x
-    average = total / len(dates)
-
-    output_dict["average_daily"] = round(average, 2)
 
     # Verifier Information
     moderators = []
@@ -162,6 +136,7 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
 
             not_other = False
             runs_analyzed_count += 1
+            average_verified.append(date_of_run.day)
             for i in moderators:
                 if x["status"]["examiner"] == i["id"]:
                     i["count"] += 1
@@ -185,6 +160,11 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
                 break
 
     output_dict["verifier_analyzed"] = runs_analyzed_count
+
+    output_dict["average_daily"] = average.get_average(games["data"][0]["id"], date, ending_date)
+
+    range = max(average_verified) - min(average_verified)
+    output_dict["verified_daily"] = round(runs_analyzed_count / range, 2)
 
     for x in moderators:
         total = 0
