@@ -58,6 +58,6 @@ def get_average(id, date=None, ending_date=None):
     # Average Runs
     dates = []
     for x in average_daily:
-        dates.append(datetime.datetime.strptime(x, "%Y-%m-%d").day)
+        dates.append(datetime.datetime.strptime(x, "%Y-%m-%d").timetuple().tm_yday)
     range = max(dates) - min(dates)
     return round(len(average_daily) / range, 2)

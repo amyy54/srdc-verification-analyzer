@@ -114,7 +114,7 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
         starting_date = None
 
     if ending_date is not None:
-        ending_date = datetime.datetime.strptime(ending_date, "%Y-%m-%d")
+        end_date = datetime.datetime.strptime(ending_date, "%Y-%m-%d")
 
     while True:
         date_reached = False
@@ -127,7 +127,7 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
 
         for x in verified["data"]:
             date_of_run = datetime.datetime.strptime((x["status"]["verify-date"])[0:10], "%Y-%m-%d")
-            if ending_date is not None and date_of_run > ending_date:
+            if ending_date is not None and date_of_run > end_date:
                 continue
 
             if date is not None and date_of_run < starting_date:
@@ -136,7 +136,7 @@ def manager(abbreviation, date=None, ending_date=None, includeLength=False):
 
             not_other = False
             runs_analyzed_count += 1
-            average_verified.append(date_of_run.day)
+            average_verified.append(date_of_run.timetuple().tm_yday)
             for i in moderators:
                 if x["status"]["examiner"] == i["id"]:
                     i["count"] += 1
