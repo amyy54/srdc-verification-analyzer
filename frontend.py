@@ -113,7 +113,8 @@ def queue_page_with_directory(games=None, category=None, user_query=None, order_
     return render_template("./queue.html",
                            queue_data=queue.load_queue(games.split(","), category=category,
                                                        user_query=user_query, queue_order=order_by,
-                                                       exclusions=excluded_items))
+                                                       exclusions=excluded_items), 
+                                                       gamereq=games)
 
 
 @app.route("/queue/<games>/records")
@@ -136,7 +137,8 @@ def records_page(games=None):
     return render_template("./queue.html",
                            queue_data=record_finder.find_records(games.split(","), category=category,
                                                                  user_query=user_query, queue_order=order_by,
-                                                                 exclusions=excluded_items))
+                                                                 exclusions=excluded_items),
+                                                                 gamereq=games)
 
 
 @app.route("/verifier/<examiner>")

@@ -8,7 +8,7 @@ Install Requirements - (`python3 -m`) `pip install -r requirements.txt`
 
 Run - `python3 frontend.py` / `python frontend.py`
 
-### Note
-This tool uses publicly accessible information with the speedrun.com API. No private information is harvested.
+### Publicity
+While its initial intentions were only to benefit verification teams, the tool is intended to be public for anyone to use for any purpose. 
 
-All information about verification analytics are calculated using such API and should not be used alone to determine activity, as factors other than "amount verified" should also be taken into account.
+All information collected through the use of this tool is collected from the Speedrun.com API directly, including information such as the queue page.

@@ -158,6 +158,7 @@ def find_records(GAMES, category=None, user_query=None, queue_order="date", excl
                             json_result[len(json_result) - 1]["runs"].append({
                                 "title": title,
                                 "title_weblink": title_weblink,
+                                "short_title": search_title,
                                 "user": user,
                                 "user_weblink": i["players"]["data"][0]["weblink"],
                                 "time": time_result,

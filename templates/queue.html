@@ -48,13 +48,13 @@
 {% for y in x["runs"] %}
 <div class="row">
     <div class="column">
-        <p><a href="{{y["title_weblink"]}}">{{y["title"]}}</a></p>
+        <p><a href="/queue/{{gamereq}}?category={{y["short_title"]}}">{{y["title"]}}</a></p>
     </div>
     <div class="column">
-        <p><a href="{{y["user_weblink"]}}">{{y["user"]}}</a></p>
+        <p><a href="/queue/{{gamereq}}?user={{y["user"]}}">{{y["user"]}}</a></p>
     </div>
     <div class="column">
-        <p><a href="{{y["weblink"]}}">{{y["time"]}}</a></p>
+        <p><a href="{{y["weblink"]}}" target="_blank">{{y["time"]}}</a></p>
     </div>
     <div class="column">
         <p>{{y["platform"]}}</p>
