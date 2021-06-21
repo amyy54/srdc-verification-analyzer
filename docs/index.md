@@ -37,7 +37,7 @@ The queue page will display a simple list of all the runs currently in the verif
 
 Clicking on the category text will allow the user to filter the current queue page by the category selected, and clicking on the runner's name will allow the user to filter the current queue page by the runner selected. These requests can also be done manually with the `category` and `user` parameters.
 
-The `orderby` option allows the user to change the order of the runs in the verification queue. By default, the order goes by the runs submitted in ascending order (oldest first). The available options to change the order are available in the [Speedrun.com API documentation](https://github.com/speedruncomorg/api/blob/master/version1/runs.md#get-runs).
+The `orderby` option allows the user to change the order of the runs in the verification queue. By default, the order goes by when the run is listed as completed in ascending order (oldest first). The available options to change the order are available in the [Speedrun.com API documentation](https://github.com/speedruncomorg/api/blob/master/version1/runs.md#get-runs).
 
 The `exclude` option allows the user to exclude certain categories from the request.
 

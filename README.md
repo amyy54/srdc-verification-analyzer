@@ -1,5 +1,5 @@
 # SRDC Verification Analyzer
-Go to this [website](http://s.minibeast.me:5000) to access the tool running on my personal server.
+Go to this [website](https://s.minibeast.me:2083) to access the tool running on my personal server.
 
 ### Download and Run Yourself
 Download the Repository - `git clone https://github.com/Minibeast/srdc-verification-analyzer.git`
