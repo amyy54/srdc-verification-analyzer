@@ -154,6 +154,8 @@ def find_records(GAMES, category=None, user_query=None, queue_order="date", excl
                             # Date ago
                             date = datetime.date.fromisoformat(i["date"])
                             dateago = timeago.format(date, datetime.datetime.now())
+                            if "hours" in dateago:
+                                dateago = "Today"
 
                             json_result[len(json_result) - 1]["runs"].append({
                                 "title": title,

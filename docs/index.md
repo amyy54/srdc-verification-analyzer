@@ -28,6 +28,13 @@ The average runs verified looks at the date runs were verified in the provided t
 
 `parseother`, when set to `yes`, will display more information about runs verified by individuals that are not currently registered as verifiers on the speedrun.com page (by default these individuals will be grouped together as "other"). This is useful if the verification team has just removed individuals from the leaderboard.
 
+## Analyzer Data
+`Location: /data/<game>/json`
+
+`Allowed Parameters: startdate, enddate, parseother`
+
+The analyzer data page will return the data collected from the [analyzer page](#Analyzer) in json format.
+
 ## Queue
 `Location: /queue/<games>`
 

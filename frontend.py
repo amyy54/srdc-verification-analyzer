@@ -82,6 +82,34 @@ def data(game=None):
                            other_google_colors=other_colors)
 
 
+@app.route("/data/<game>/json")
+def data_json(game=None):
+    if game is None:
+        abort(405)
+
+    start_date = request.args.get("startdate")
+    end_date = request.args.get("enddate")
+    parse_other = request.args.get("parseother")
+
+    analyzer_data = analyzer.manager(game, date=start_date, ending_date=end_date)
+
+    if analyzer_data is None:
+        return abort(400)
+
+    result = {
+        "code": 200,
+        "data": {},
+        "other_data": {}
+    }
+
+    if parse_other and len(analyzer_data["other_list"]) > 0:
+        other_data = analyzer.parse_other(analyzer_data["other_list"])
+        result["other_data"] = other_data
+
+    result["data"] = analyzer_data
+    return result
+
+
 @app.route("/queue/", methods=["POST", "GET"])
 def queue_page():
     if request.method == 'GET':

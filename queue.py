@@ -97,6 +97,8 @@ def load_queue(GAMES, category=None, user_query=None, queue_order="date", exclus
                         # Date ago
                         date = datetime.date.fromisoformat(i["date"])
                         dateago = timeago.format(date, datetime.datetime.now())
+                        if "hours" in dateago:
+                            dateago = "Today"
 
                         time_weblink = "<a href=" + i["weblink"] + ">" + time_result + "</a>"
                         # title_weblink = "<a href=" + title_weblink + ">" + title + "</a>"

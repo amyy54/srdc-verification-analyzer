@@ -101,6 +101,8 @@ def analyzer(examiner, game=None, exclusions=None):
             # Date ago
             date = datetime.date.fromisoformat(i["date"])
             dateago = timeago.format(date, datetime.datetime.now())
+            if "hours" in dateago:
+                dateago = "Today"
 
             verifyago = ""
 
@@ -112,6 +114,8 @@ def analyzer(examiner, game=None, exclusions=None):
                     verify_date = verify_date.split("T", 1)[0]
                     verify_date = datetime.date.fromisoformat(verify_date)
                     verifyago = timeago.format(verify_date, datetime.datetime.now())
+                    if "hours" in verifyago:
+                        verifyago = "Today"
             else:
                 status = "Rejected"
 
