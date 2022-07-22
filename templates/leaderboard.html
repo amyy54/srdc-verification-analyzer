@@ -1,0 +1,40 @@
+<html>
+    <head>
+        <title>{{ analyzer_info['game_name'] }} Verification Leaderboard | SRDC-Verification-Analyzer</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/leaderboard.css') }}">
+        <style>
+            body {
+                background-image: url("{{ analyzer_info['background_image'] }}");
+                background-attachment: fixed;
+                background-size: cover;
+            }
+        </style>
+    </head>
+    <body>
+        <article class="leaderboard">
+            <header>
+              <h1 class="leaderboard__title"><span class="leaderboard__title--top">{{ analyzer_info['game_name'] }}</span><span class="leaderboard__title--bottom">Verification Leaderboard</span></h1>
+            </header>
+            
+            <main class="leaderboard__profiles">
+                {% for x in analyzer_info['verifier_stats'] %}
+                {% if x['name'] != 'Other' %}
+                <article class="leaderboard__profile">
+                {% if x["has_pfp"] %}
+                <img src="{{ x['pfp_uri'] }}" alt="{{ x['name'] }}" class="leaderboard__picture">
+                {% else %}
+                <img src="{{ url_for('static', filename='images/blank.png') }}" alt="{{ x['name'] }}" class="leaderboard__picture">
+                {% endif %}
+                <span class="leaderboard__name">{{ x['name'] }}</span>
+                {% if show_rejects %}
+                <span class="leaderboard__value">{{ x['runs'] }}<div style="color: #f44336">{{ x['rejected_runs'] }}</div></span>
+                {% else %}
+                <span class="leaderboard__value">{{ x['runs'] }}</span>
+                {% endif %}
+                </article>
+                {% endif %}
+                {% endfor %}
+            </main>
+        </article>
+    </body>
+</html>

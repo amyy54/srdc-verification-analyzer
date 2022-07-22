@@ -1,0 +1,26 @@
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/queue.css') }}">
+    <title>{{gamereq.upper()}} Queue | SRDC-Verification-Analyzer</title>
+</head>
+<body>
+{% for x in queue_data %}
+<h2 style="padding-left: 50px;">{{x["game_name"]}} - [{{ x["run_count"] }}]</h2>
+<table class="centerHoriz">
+{% for y in x["runs"] %}
+<tr>
+    <td><a href="/queue/{{gamereq}}?category={{y["short_title"]}}">{{y["title"]}}</a></td>
+    <td><a href="/queue/{{gamereq}}?user={{y["user"]}}">{{y["user"]}}</a></td>
+    <td><a href="{{y["weblink"]}}" target="_blank">{{y["time"]}}</a></td>
+    {% if y["platform"][0:3] in REGIONS %}
+    <td class="hide"><img src="{{ url_for('static', filename='images/' + y['platform'][0:2] + '.png') }}"> {{y["platform"][3:]}}</td>
+    {% else %}
+    <td class="hide">{{y["platform"]}}</td>
+    {% endif %}
+    <td class="last">{{y["date"]}}</td>
+</tr>
+{% endfor %}
+</table>
+{% endfor %}
+</body>
+</html>

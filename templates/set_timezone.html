@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <title>Set Timezone | SRDC-Verification-Analyzer</title>
+    </head>
+    <body>
+        <h1>Set Timezone</h1>
+        <p>This page allows you to set a timezone cookie for the site to utilize on the Analyzer pages.</p>
+        <p>Selecting the "Clear" Option will clear the cookie.</p>
+        <form action="/set_timezone" method="post">
+            <input name="tz_input" id="tzInput" placeholder="UTC" list="timezones" />
+            <datalist id="timezones">
+                <option value="Clear"></option>
+                {% for timezone in timezones %}
+                <option value="{{ timezone }}"></option>
+                {% endfor %}
+            </datalist>
+            <button type="submit">Submit</button>
+        </form>
+    </body>
+</html>

@@ -1,0 +1,25 @@
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/queue.css') }}">
+    <title>{{verifier_data["examiner"]}} | SRDC-Verification-Analyzer</title>
+</head>
+<body>
+<h2 style="padding-left: 50px;">{{verifier_data["examiner"]}}</h2>
+<table class="centerHoriz">
+{% for y in verifier_data["runs"] %}
+<tr>
+    <td>{{y["game"]}} - <a href="{{y["title_weblink"]}}">{{y["title"]}}</a></td>
+    <td><a href="{{y["user_weblink"]}}">{{y["user"]}}</a></td>
+    <td><a href="{{y["weblink"]}}" target="_blank">{{y["time"]}}</a></td>
+    {% if y["platform"][0:3] in REGIONS %}
+    <td class="hide"><img src="{{ url_for('static', filename='images/' + y['platform'][0:2] + '.png') }}"> {{y["platform"][3:]}}</td>
+    {% else %}
+    <td class="hide">{{y["platform"]}}</td>
+    {% endif %}
+    <td>{{y["date"]}}</td>
+    <td class="hide_less last">{{y["status"]}} {{y["verify-date"]}}</td>
+</tr>
+{% endfor %}
+</table>
+</body>
+</html>

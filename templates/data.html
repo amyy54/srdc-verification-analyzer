@@ -1,0 +1,49 @@
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/data.css') }}">
+    <title>{{ analyzer_info['game_name'] }} | SRDC-Verification-Analyzer</title>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Examiner');
+        data.addColumn('number', 'Verified');
+        data.addColumn({ 'type': 'string', 'role': 'tooltip', 'p': {'html': true} });
+
+        data.addRows({{ chart_data|safe }});
+
+        var options = {
+          title: '{{ analyzer_info['game_name'] }}',
+          chartArea: { top: 40, height: 1000, left: 0 },
+          slices: {{chart_colors|safe}},
+          backgroundColor: { fill: 'transparent' },
+          tooltip: { isHtml: true, trigger: 'selection' },
+          legend: { position: 'left' },
+          sliceVisibilityThreshold: 0.0
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+</head>
+<body>
+    <h1>{{ analyzer_info['game_name'] }}</h1>
+    {% if not isMinimal %}
+    <h3>Current runs in queue: <a href="/queue/{{ analyzer_info['game_id'] }}">{{ analyzer_info['in_queue'] }}</a></h3>
+    <h3>Average runs per day: {{ analyzer_info['average_daily'] }}</h3>
+    {% endif %}
+    <h3>Average runs verified per day: {{ analyzer_info['verified_daily'] }}</h3>
+    <h2>Verification Statistics:</h2>
+    <h3>Runs Analyzed: {{ analyzer_info['verifier_analyzed'] }}</h3>
+    <div>
+        <div id="piechart" style="float: left; width: 1000px; height: 650px"></div>
+    </div>
+</body>
+</html>

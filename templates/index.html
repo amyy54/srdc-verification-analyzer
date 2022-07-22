@@ -1,0 +1,40 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <title>SRDC-Verification-Analyzer</title>
+</head>
+<body>
+    <h1>SRDC Verification Analyzer</h1>
+
+    <p style="padding-bottom: 1em;">Documentation for the site is available <a href="{{docs_url}}">here</a></p>
+
+    <h2>Verification Statistics</h2>
+
+    <form onsubmit="return dataFormParse();">
+        <p style="font-weight: bold">If you want to get more than one game<br>separate the abbreviations by commas</p>
+        <p>Abbreviation <input type="text" name="abbreviation" id="abbreviation" placeholder="smo[,smoce]" /></p>
+        <br>
+        <p style="font-weight: bold">If calendar preview doesn't work<br>please use ISO8601 format</p>
+        <p>Starting Date <input type="date" name="start_date" id="start_date" placeholder="2020-10-01" /></p>
+        <p>Ending Date <input type="date" name="end_date" id="end_date" placeholder="2020-11-01" /></p>
+        <br>
+        <p>Parse 'Other' Information <input type="checkbox" name="other_parse" id="other_parse" /><br> - Renders more detailed information about Verifiers not on the current moderation team</p>
+        <p><input type="submit" value="Submit"/></p>
+    </form>
+
+    <h2>Verification Queue</h2>
+    <form onsubmit="return queueFormParse();">
+        <p style="font-weight: bold">If you want to get more than one queue<br>separate the abbreviations by commas</p>
+        <p>Abbreviation <input type="text" name="abbreviation" id="queue_id" placeholder="smo[,smoce]" /></p>
+        <p><input type="submit" value="Submit"/></p>
+    </form>
+
+    <h2>Verifier Statistics</h2>
+    <form onsubmit="return verifierFormParse();">
+        <p>Verifier <input type="text" name="verifier" id="verifier_id" placeholder="Minibeast" /></p>
+        <p><input type="submit" value="Submit"/></p>
+    </form>
+</body>
+</html>
