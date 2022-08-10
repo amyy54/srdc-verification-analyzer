@@ -7,7 +7,7 @@ from json import dumps
 
 app = Flask(__name__)
 
-TWITTER = "https://twitter.com/aMinibeast"
+TWITTER = "https://twitter.com/mini54_"
 DOCS = "https://minibeast.me/srdc-verification-analyzer"
 
 REGIONS = ['br_', 'cn_', 'eu_', 'jp_', 'kr_', 'us_']
