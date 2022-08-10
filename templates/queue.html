@@ -9,8 +9,8 @@
 <table class="centerHoriz">
 {% for y in x["runs"] %}
 <tr>
-    <td><a href="/queue/{{gamereq}}?category={{y["short_title"]}}">{{y["title"]}}</a></td>
-    <td><a href="/queue/{{gamereq}}?user={{y["user"]}}">{{y["user"]}}</a></td>
+    <td><a href="{{ url_for('queue_page_with_directory', games=gamereq, category=[y['short_title']]) }}">{{y["title"]}}</a></td>
+    <td><a href="{{ url_for('queue_page_with_directory', games=gamereq, user=[y['user']]) }}">{{y["user"]}}</a></td>
     <td><a href="{{y["weblink"]}}" target="_blank">{{y["time"]}}</a></td>
     {% if y["platform"][0:3] in REGIONS %}
     <td class="hide"><img src="{{ url_for('static', filename='images/' + y['platform'][0:2] + '.png') }}"> {{y["platform"][3:]}}</td>

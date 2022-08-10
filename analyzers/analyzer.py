@@ -6,7 +6,7 @@ import datetime
 from isodate import parse_datetime
 import pytz
 from analyzers import queue, average, sorting, combiner
-from flask import abort
+from flask import abort, url_for
 
 ENDPOINT = "https://www.speedrun.com/api/v1/"
 GAME = ENDPOINT + "games?abbreviation={}&embed=moderators"
@@ -62,7 +62,7 @@ def create_tooltip(analyzer_data, game_id):
         """
     else:
         result += f"""
-            <strong><a href="/verifier/{analyzer_data['name']}?game={analyzer_data['length'][0]['game_id']}">{analyzer_data['name']}</a></strong>
+            <strong><a href="{url_for('verifier_page', examiner=analyzer_data['name'], game=[analyzer_data['length'][0]['game_id']])}">{analyzer_data['name']}</a></strong>
         """
     result += f"""
             <p><b>{analyzer_data['runs']}</b> Run(s) Verified</p>

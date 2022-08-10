@@ -36,7 +36,7 @@
 <body>
     <h1>{{ analyzer_info['game_name'] }}</h1>
     {% if not isMinimal %}
-    <h3>Current runs in queue: <a href="/queue/{{ analyzer_info['game_id'] }}">{{ analyzer_info['in_queue'] }}</a></h3>
+    <h3>Current runs in queue: <a href="{{ url_for('queue_page_with_directory', games=analyzer_info['game_id']) }}">{{ analyzer_info['in_queue'] }}</a></h3>
     <h3>Average runs per day: {{ analyzer_info['average_daily'] }}</h3>
     {% endif %}
     <h3>Average runs verified per day: {{ analyzer_info['verified_daily'] }}</h3>
