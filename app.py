@@ -158,7 +158,7 @@ def queue_page():
     if request.method == 'GET':
         query = request.args.get("abbreviation")
         if query is None:
-            return redirect("/")
+            return redirect(url_for("main"))
         else:
             return redirect(url_for('queue_page_with_directory', games=query, category=request.args.get("category"),
                                     user_query=request.args.get("user"), order_by=request.args.get("orderby")))
