@@ -4,11 +4,12 @@ from flask.helpers import make_response
 from convert_time import convert_time
 import pytz
 from json import dumps
+import os
 
 app = Flask(__name__)
 
-TWITTER = "https://twitter.com/mini54_"
-DOCS = "https://minibeast.me/srdc-verification-analyzer"
+AUTHOR_LINK = os.environ.get("AUTHOR_LINK")
+DOCS = os.environ.get("DOCS")
 
 REGIONS = ['br_', 'cn_', 'eu_', 'jp_', 'kr_', 'us_']
 
@@ -27,8 +28,8 @@ def error(e):
         "description": e.description,
         "contact": {
             "message": "If there is reason to believe that this error is caused by the fault of the server, "
-                       "please send a message on twitter indicating the request made and the error code provided.",
-            "link": TWITTER
+                       "please send a message indicating the request made and the error code provided.",
+            "link": AUTHOR_LINK
         }
     })
 
@@ -39,7 +40,7 @@ def error(e):
 
 @app.route("/")
 def main():
-    return render_template("index.html", docs_url=DOCS)
+    return render_template("index.html", docs_url=DOCS if DOCS else "/docs")
 
 
 @app.route("/set_timezone", methods=["POST", "GET"])
