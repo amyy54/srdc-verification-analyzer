@@ -1,3 +1,5 @@
+**This application is deprecated. The new repository is available [here](https://mini.amyy.me/src-analyzer).**
+
 # SRDC Verification Analyzer
 Documentation available [here](https://minibeast.me/srdc-verification-analyzer).
 

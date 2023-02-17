@@ -34,6 +34,7 @@
     </script>
 </head>
 <body>
+    <p style="font-weight: bold; color: red;">This application is deprecated, and will be taken offline March 3rd. Please check out the new version <a href="/src-analyzer">here</a>.</p>
     <h1>{{ analyzer_info['game_name'] }}</h1>
     {% if not isMinimal %}
     <h3>Current runs in queue: <a href="{{ url_for('queue_page_with_directory', games=analyzer_info['game_id']) }}">{{ analyzer_info['in_queue'] }}</a></h3>
